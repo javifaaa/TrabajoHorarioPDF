@@ -113,9 +113,10 @@ export async function generarPDF(data: FormularioData): Promise<jsPDF> {
   if (logoDataUrl) {
     try {
       // White background box for logo
+      const logoMarginRight = 10;
       doc.setFillColor(...colors.white);
-      doc.roundedRect(pageWidth - margin - 44, 3, 44, 20, 2, 2, 'F');
-      doc.addImage(logoDataUrl, 'PNG', pageWidth - margin - 42, 4.5, 40, 17);
+      doc.roundedRect(pageWidth - logoMarginRight - 44, 3, 44, 20, 2, 2, 'F');
+      doc.addImage(logoDataUrl, 'PNG', pageWidth - logoMarginRight - 42, 4.5, 40, 17);
     } catch {
       // Skip if logo fails
     }
@@ -128,18 +129,19 @@ export async function generarPDF(data: FormularioData): Promise<jsPDF> {
   doc.text('PARTE DE INCIDENCIAS', margin, 15);
 
   // Subtitle info
+  const middleX = (pageWidth / 2) - 10;
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
   doc.text(`Fecha: ${formatDate(data.fecha)}`, margin, 23);
-  doc.text(`Centro: ${data.centroTrabajo}`, pageWidth / 2, 23);
+  doc.text(`Centro: ${data.centroTrabajo}`, middleX, 23);
   doc.text(`Responsable 1: ${data.responsableTurno || '-'}`, margin, 29);
   const resp2Text = data.responsableTurno2 ? `Responsable 2: ${data.responsableTurno2}` : '';
   if (resp2Text) {
-    doc.text(resp2Text, pageWidth / 2, 29);
+    doc.text(resp2Text, middleX, 29);
   }
   doc.text(`Fecha: ${formatDate(data.fecha)}`, margin, 35);
   doc.setFontSize(8);
-  doc.text(`Generado: ${new Date().toLocaleString('es-ES')}`, pageWidth / 2, 35);
+  doc.text(`Generado: ${new Date().toLocaleString('es-ES')}`, middleX, 35);
 
   y = 52;
 
