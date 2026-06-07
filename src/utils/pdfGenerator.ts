@@ -115,8 +115,8 @@ export async function generarPDF(data: FormularioData): Promise<jsPDF> {
     try {
       // White background box for logo
       doc.setFillColor(...colors.white);
-      doc.roundedRect(pageWidth - logoMarginRight - 44, 3, 44, 20, 2, 2, 'F');
-      doc.addImage(logoDataUrl, 'PNG', pageWidth - logoMarginRight - 42, 4.5, 40, 17);
+      doc.roundedRect(pageWidth - logoMarginRight - 44, 7, 44, 20, 2, 2, 'F');
+      doc.addImage(logoDataUrl, 'PNG', pageWidth - logoMarginRight - 42, 8.5, 40, 17);
     } catch {
       // Skip if logo fails
     }
@@ -127,9 +127,9 @@ export async function generarPDF(data: FormularioData): Promise<jsPDF> {
   doc.setTextColor(...colors.white);
   doc.setFontSize(7);
   doc.setFont('helvetica', 'bold');
-  doc.text('SERVICIOS MULTIPLES DONCA S.L.', logoCenterX, 28, { align: 'center' });
+  doc.text('SERVICIOS MULTIPLES DONCA S.L.', logoCenterX, 32, { align: 'center' });
   doc.setFont('helvetica', 'normal');
-  doc.text('C.I.F B 93027118', logoCenterX, 32, { align: 'center' });
+  doc.text('C.I.F B 93027118', logoCenterX, 36, { align: 'center' });
 
   // Title
   doc.setTextColor(...colors.white);
