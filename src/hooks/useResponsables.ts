@@ -29,7 +29,7 @@ export function useResponsables() {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'responsables' },
-        (payload) => {
+        () => {
           fetchResponsables();
         }
       )

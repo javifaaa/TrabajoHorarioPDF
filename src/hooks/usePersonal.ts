@@ -32,7 +32,7 @@ export function usePersonal() {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'personal' },
-        (payload) => {
+        () => {
           // Re-fetch everything to maintain order, or handle optimistic updates
           fetchPersonal();
         }
