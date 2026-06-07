@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300;
+  }
+
+  /* Improve input appearance on iOS */
+  input[type="date"],
+  input[type="time"],
+  select {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+@layer components {
+  /* Card */
+  .card {
+    @apply bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-card p-5 sm:p-6 transition-all duration-200;
+  }
+
+  .card:hover {
+    @apply shadow-card-hover;
+  }
+
+  .card-header {
+    @apply flex items-center gap-3 mb-5;
+  }
+
+  .card-icon {
+    @apply flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center;
+  }
+
+  .card-title {
+    @apply text-base sm:text-lg font-bold text-gray-900 dark:text-white;
+  }
+
+  .card-subtitle {
+    @apply text-xs sm:text-sm text-gray-500 dark:text-gray-400;
+  }
+
+  /* Form elements */
+  .form-group {
+    @apply flex flex-col;
+  }
+
+  .form-label {
+    @apply block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5;
+  }
+
+  .form-input {
+    @apply w-full px-4 py-3 sm:py-2.5 text-base sm:text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
+    focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 dark:focus:ring-primary-400/30 dark:focus:border-primary-400
+    transition-all duration-200;
+  }
+
+  .form-input-error {
+    @apply border-red-400 dark:border-red-500 focus:ring-red-500/30 focus:border-red-500;
+  }
+
+  .form-error {
+    @apply mt-1.5 text-xs font-medium text-red-500 dark:text-red-400 flex items-center gap-1;
+  }
+
+  .form-error::before {
+    content: '⚠';
+    @apply text-[10px];
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.97];
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 sm:py-2.5 text-sm font-semibold text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/40 hover:bg-primary-100 dark:hover:bg-primary-900/60 rounded-xl border border-primary-200 dark:border-primary-800 transition-all duration-200 active:scale-[0.97];
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 sm:py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 transition-all duration-200 active:scale-[0.97];
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 sm:py-2.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-xl shadow-sm transition-all duration-200 active:scale-[0.97];
+  }
+
+  .btn-success {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-3 text-base sm:text-sm font-bold text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 active:scale-[0.97];
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  }
+
+  .btn-success:hover {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  }
+}
+
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .animate-slideUp {
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+/* Print-friendly styles */
+@media print {
+  body {
+    background: white !important;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+}
