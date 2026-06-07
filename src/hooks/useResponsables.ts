@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { supabase } from '../utils/supabase';
 
 const DEFAULT_RESPONSABLES = [
   'SALVADOR PALMERO',
@@ -7,42 +8,51 @@ const DEFAULT_RESPONSABLES = [
   'JOSÉ BELLIDO',
 ];
 
-const STORAGE_KEY = 'donca_responsables_servicio';
-
 export function useResponsables() {
-  const [responsables, setResponsables] = useState<string[]>([]);
+  const [responsables, setResponsables] = useState<string[]>(DEFAULT_RESPONSABLES);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          setResponsables(parsed);
-        } else {
-          setResponsables(DEFAULT_RESPONSABLES);
-        }
-      } catch {
-        setResponsables(DEFAULT_RESPONSABLES);
+    // 1. Fetch initial data
+    const fetchResponsables = async () => {
+      const { data, error } = await supabase.from('responsables').select('nombre').order('created_at');
+      if (error || !data) {
+        console.error('Error fetching responsables:', error);
+      } else if (data.length > 0) {
+        setResponsables(data.map((row) => row.nombre));
       }
-    } else {
-      setResponsables(DEFAULT_RESPONSABLES);
-    }
+    };
+    fetchResponsables();
+
+    // 2. Subscribe to real-time changes
+    const channel = supabase
+      .channel('responsables_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'responsables' },
+        (payload) => {
+          fetchResponsables();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  const addResponsable = (nombre: string) => {
+  const addResponsable = async (nombre: string) => {
     const trimmed = nombre.trim().toUpperCase();
     if (trimmed && !responsables.includes(trimmed)) {
-      const updated = [...responsables, trimmed];
-      setResponsables(updated);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      setResponsables((prev) => [...prev, trimmed]);
+      const { error } = await supabase.from('responsables').insert([{ nombre: trimmed }]);
+      if (error) console.error('Error inserting responsable:', error);
     }
   };
 
-  const removeResponsable = (nombre: string) => {
-    const updated = responsables.filter((p) => p !== nombre);
-    setResponsables(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  const removeResponsable = async (nombre: string) => {
+    setResponsables((prev) => prev.filter((p) => p !== nombre));
+    const { error } = await supabase.from('responsables').delete().eq('nombre', nombre);
+    if (error) console.error('Error deleting responsable:', error);
   };
 
   return { responsables, addResponsable, removeResponsable };
