@@ -122,13 +122,14 @@ export async function generarPDF(data: FormularioData): Promise<jsPDF> {
     }
   }
 
-  // Company Info under logo
+  // Company Info under logo (centered with respect to the logo)
+  const logoCenterX = pageWidth - logoMarginRight - 22; // 44 / 2 = 22
   doc.setTextColor(...colors.white);
   doc.setFontSize(7);
   doc.setFont('helvetica', 'bold');
-  doc.text('SERVICIOS MULTIPLES DONCA S.L.', pageWidth - logoMarginRight, 28, { align: 'right' });
+  doc.text('SERVICIOS MULTIPLES DONCA S.L.', logoCenterX, 28, { align: 'center' });
   doc.setFont('helvetica', 'normal');
-  doc.text('C.I.F B 93027118', pageWidth - logoMarginRight, 32, { align: 'right' });
+  doc.text('C.I.F B 93027118', logoCenterX, 32, { align: 'center' });
 
   // Title
   doc.setTextColor(...colors.white);
