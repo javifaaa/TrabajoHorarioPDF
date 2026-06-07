@@ -19,7 +19,12 @@ export function usePersonal() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
-        setPersonal(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setPersonal(parsed);
+        } else {
+          setPersonal(DEFAULT_PERSONAL);
+        }
       } catch {
         setPersonal(DEFAULT_PERSONAL);
       }

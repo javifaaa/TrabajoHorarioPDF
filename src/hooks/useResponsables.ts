@@ -16,7 +16,12 @@ export function useResponsables() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
-        setResponsables(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setResponsables(parsed);
+        } else {
+          setResponsables(DEFAULT_RESPONSABLES);
+        }
       } catch {
         setResponsables(DEFAULT_RESPONSABLES);
       }
