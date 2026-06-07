@@ -69,18 +69,28 @@ export const StaffSection: React.FC<StaffSectionProps> = ({
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
             Gestionar Nombres de Personal
           </h3>
-          <form onSubmit={handleAddName} className="flex gap-2 mb-4">
+          <div className="flex gap-2 mb-4">
             <input
               type="text"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddName(e as any);
+                }
+              }}
               placeholder="Añadir nuevo nombre..."
               className="form-input text-sm py-1.5"
             />
-            <button type="submit" className="btn-secondary py-1.5 px-3 text-sm whitespace-nowrap">
+            <button
+              type="button"
+              onClick={handleAddName}
+              className="btn-secondary py-1.5 px-3 text-sm whitespace-nowrap"
+            >
               Añadir
             </button>
-          </form>
+          </div>
           <div className="flex flex-wrap gap-2">
             {personal.map((nombre) => (
               <span
