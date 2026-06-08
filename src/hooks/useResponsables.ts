@@ -3,7 +3,7 @@ import { supabase } from '../utils/supabase';
 
 const DEFAULT_RESPONSABLES = [
   'SALVADOR PALMERO',
-  'JESÚS LOPEZ',
+  'JESÚS LÓPEZ',
   'JUAN GONZÁLEZ',
   'JOSÉ BELLIDO',
 ];
