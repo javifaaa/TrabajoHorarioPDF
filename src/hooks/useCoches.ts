@@ -25,8 +25,9 @@ export function useCoches() {
   const calcularCochesSemana = async (fechaDomingo: string) => {
     setIsCalculating(true);
     try {
-      const [y, m, d] = fechaDomingo.split('-');
-      const date = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+      const parts = fechaDomingo.split('-');
+      if (parts.length !== 3) return 0;
+      const date = new Date(parseInt(parts[0]!), parseInt(parts[1]!) - 1, parseInt(parts[2]!));
       const day = date.getDay();
       
       // Asegurarnos de que calculamos desde el lunes de esta semana

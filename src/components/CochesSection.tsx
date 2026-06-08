@@ -15,8 +15,9 @@ export const CochesSection: React.FC<CochesSectionProps> = ({ register, watch, s
   const cochesDiarios = watch('cochesDiarios');
   const parseLocalDate = (dateStr: string) => {
     if (!dateStr) return null;
-    const [y, m, d] = dateStr.split('-');
-    return new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return null;
+    return new Date(parseInt(parts[0]!), parseInt(parts[1]!) - 1, parseInt(parts[2]!));
   };
   
   const dateObj = parseLocalDate(fecha);
