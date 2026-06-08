@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Header } from './components/Header';
@@ -12,7 +12,7 @@ import { Login } from './components/Login';
 import { formularioSchema, type FormularioSchemaType } from './schemas/incidentForm';
 import { useAutoSave } from './hooks/useAutoSave';
 import { useDarkMode } from './hooks/useDarkMode';
-import { cargarBorrador, limpiarBorrador } from './utils/storage';
+import { limpiarBorrador } from './utils/storage';
 import type { FormularioData } from './types';
 
 const getLocalDateString = (): string => {
