@@ -5,6 +5,7 @@ import { Header } from './components/Header';
 import { GeneralDataSection } from './components/GeneralDataSection';
 import { StaffSection } from './components/StaffSection';
 import { IncidentsSection } from './components/IncidentsSection';
+import { CochesSection } from './components/CochesSection';
 import { PdfPreviewModal } from './components/PdfPreviewModal';
 import { ImportExportButtons } from './components/ImportExportButtons';
 import { Login } from './components/Login';
@@ -27,6 +28,8 @@ const DEFAULT_VALUES: FormularioSchemaType = {
   centroTrabajo: 'Holtenia S.A (Bingo América)',
   auxiliares: [{ nombre: '', turno: '' }],
   incidencias: [],
+  cochesDiarios: '',
+  cochesSemana: '',
 };
 
 function App() {
@@ -71,6 +74,8 @@ function App() {
           centroTrabajo: savedData.centroTrabajo ?? DEFAULT_VALUES.centroTrabajo,
           auxiliares: savedData.auxiliares?.length ? savedData.auxiliares : DEFAULT_VALUES.auxiliares,
           incidencias: savedData.incidencias ?? DEFAULT_VALUES.incidencias,
+          cochesDiarios: savedData.cochesDiarios ?? DEFAULT_VALUES.cochesDiarios,
+          cochesSemana: savedData.cochesSemana ?? DEFAULT_VALUES.cochesSemana,
         }
       : DEFAULT_VALUES,
   });
@@ -164,6 +169,8 @@ function App() {
       centroTrabajo: values.centroTrabajo,
       auxiliares: values.auxiliares,
       incidencias: values.incidencias,
+      cochesDiarios: values.cochesDiarios,
+      cochesSemana: values.cochesSemana,
     };
   }, [watch]);
 
@@ -202,6 +209,8 @@ function App() {
             centroTrabajo: data.centroTrabajo ?? DEFAULT_VALUES.centroTrabajo,
             auxiliares: data.auxiliares?.length ? data.auxiliares : DEFAULT_VALUES.auxiliares,
             incidencias: data.incidencias ?? [],
+            cochesDiarios: data.cochesDiarios ?? '',
+            cochesSemana: data.cochesSemana ?? '',
           });
 
           setAuxiliarCount(data.auxiliares?.length || 1);
@@ -274,7 +283,10 @@ function App() {
             onRemoveAuxiliar={handleRemoveAuxiliar}
           />
 
-          {/* Section 3: Incidents */}
+          {/* Section 3: Coches */}
+          <CochesSection register={register} watch={watch} />
+
+          {/* Section 4: Incidents */}
           <IncidentsSection
             register={register}
             incidentCount={incidentCount}

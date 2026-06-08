@@ -15,6 +15,8 @@ export interface FormularioData {
   centroTrabajo: string;
   auxiliares: Auxiliar[];
   incidencias: Incidencia[];
+  cochesDiarios?: string;
+  cochesSemana?: string;
 }
 
 export type ThemeMode = 'light' | 'dark';

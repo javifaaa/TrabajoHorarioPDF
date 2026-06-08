@@ -26,6 +26,8 @@ export const formularioSchema = z.object({
     .min(1, 'El centro de trabajo es obligatorio'),
   auxiliares: z.array(auxiliarSchema),
   incidencias: z.array(incidenciaSchema),
+  cochesDiarios: z.string().optional(),
+  cochesSemana: z.string().optional(),
 });
 
 export type FormularioSchemaType = z.infer<typeof formularioSchema>;

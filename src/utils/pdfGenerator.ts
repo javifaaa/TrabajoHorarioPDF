@@ -175,7 +175,28 @@ export async function generarPDF(data: FormularioData): Promise<jsPDF> {
   doc.setFont('helvetica', 'normal');
   doc.text(data.responsableTurno2 || '-', halfPage + 28, y);
   
-  y += 5;
+  y += 6;
+
+  // Fila 3: Coches
+  const cochesDiariosStr = data.cochesDiarios?.trim();
+  const cochesSemanaStr = data.cochesSemana?.trim();
+  
+  if (cochesDiariosStr || cochesSemanaStr) {
+    doc.setFont('helvetica', 'bold');
+    doc.text('Coches diarios:', margin, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(cochesDiariosStr || '-', margin + 25, y);
+
+    if (cochesSemanaStr) {
+      doc.setFont('helvetica', 'bold');
+      doc.text('Coches semana:', halfPage, y);
+      doc.setFont('helvetica', 'normal');
+      doc.text(cochesSemanaStr, halfPage + 26, y);
+    }
+    y += 6;
+  }
+  
+  y += 3;
   doc.setFontSize(7);
   doc.setTextColor(...colors.textLight);
   doc.text(`Documento generado: ${new Date().toLocaleString('es-ES')}`, margin, y);
