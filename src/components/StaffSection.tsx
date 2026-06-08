@@ -4,13 +4,14 @@ import type { FormularioSchemaType } from '../schemas/incidentForm';
 import { usePersonal } from '../hooks/usePersonal';
 
 const TURNOS = [
-  '10-19h',
-  '13-20h',
-  '19-4h',
-  '20-4h',
-  '19-5h',
-  '20-5h',
-  '13-19h / 19:30-2h',
+  '10h-19h',
+  '13h-20h',
+  '15:30h-00h',
+  '19h-04h',
+  '20h-04h',
+  '19h-05h',
+  '20h-05h',
+  '13h-19h / 19:30h-02h',
 ] as const;
 
 interface StaffSectionProps {
