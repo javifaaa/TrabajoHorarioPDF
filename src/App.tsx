@@ -14,8 +14,14 @@ import { useDarkMode } from './hooks/useDarkMode';
 import { cargarBorrador, limpiarBorrador } from './utils/storage';
 import type { FormularioData } from './types';
 
+const getLocalDateString = () => {
+  const date = new Date();
+  const offset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - offset).toISOString().split('T')[0];
+};
+
 const DEFAULT_VALUES: FormularioSchemaType = {
-  fecha: new Date().toISOString().split('T')[0] ?? '',
+  fecha: getLocalDateString(),
   responsableTurno: '',
   responsableTurno2: '',
   centroTrabajo: 'Holtenia S.A (Bingo América)',
@@ -38,6 +44,11 @@ function App() {
   const handleLoginSuccess = () => {
     sessionStorage.setItem('donca_auth', 'true');
     setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('donca_auth');
+    setIsAuthenticated(false);
   };
 
   // Load saved draft
@@ -225,7 +236,7 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header mode={mode} onToggleMode={toggleMode} guardado={guardado} />
+      <Header mode={mode} onToggleMode={toggleMode} guardado={guardado} onLogout={handleLogout} />
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-6 sm:px-6 sm:py-8 space-y-5 sm:space-y-6">
         {/* Notification toast */}

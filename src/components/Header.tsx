@@ -5,9 +5,10 @@ interface HeaderProps {
   mode: ThemeMode;
   onToggleMode: () => void;
   guardado: boolean;
+  onLogout?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ mode, onToggleMode, guardado }) => {
+export const Header: React.FC<HeaderProps> = ({ mode, onToggleMode, guardado, onLogout }) => {
   return (
     <header className="relative overflow-hidden bg-gradient-to-r from-primary-700 via-primary-600 to-primary-700 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900">
       {/* Decorative background elements */}
@@ -71,6 +72,19 @@ export const Header: React.FC<HeaderProps> = ({ mode, onToggleMode, guardado }) 
                 </svg>
               )}
             </button>
+
+            {/* Logout button */}
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-500/10 backdrop-blur-sm border border-red-500/20 flex items-center justify-center text-red-100 hover:bg-red-500/20 transition-all duration-200 active:scale-95"
+                title="Cerrar sesión"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                </svg>
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -17,15 +17,14 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     setLoading(true);
 
     try {
-      // Buscar el usuario en la tabla
-      const { data, error } = await supabase
-        .from('usuarios')
-        .select('*')
-        .eq('username', username)
-        .eq('password', password)
-        .single();
+      // Llamar a la función segura (RPC) para verificar la contraseña hasheada
+      const { data: isValid, error } = await supabase
+        .rpc('login_usuario', {
+          p_username: username,
+          p_password: password
+        });
 
-      if (error || !data) {
+      if (error || !isValid) {
         setErrorMsg('Usuario o contraseña incorrectos');
       } else {
         onLoginSuccess();

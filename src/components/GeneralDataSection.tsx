@@ -129,7 +129,7 @@ export const GeneralDataSection: React.FC<GeneralDataSectionProps> = ({ register
         {/* Responsable del turno 1 */}
         <div className="form-group">
           <label htmlFor="responsableTurno" className="form-label">
-            Responsable turno 1 <span className="text-red-500">*</span>
+            Responsable turno (10h-19h) <span className="text-red-500">*</span>
           </label>
           <select
             id="responsableTurno"
@@ -151,7 +151,7 @@ export const GeneralDataSection: React.FC<GeneralDataSectionProps> = ({ register
         {/* Responsable del turno 2 */}
         <div className="form-group">
           <label htmlFor="responsableTurno2" className="form-label">
-            Responsable turno 2
+            Responsable turno (19h-04h)
           </label>
           <select
             id="responsableTurno2"
