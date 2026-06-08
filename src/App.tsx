@@ -54,9 +54,6 @@ function App() {
     setIsAuthenticated(false);
   };
 
-  // Load saved draft
-  const savedData = useMemo(() => cargarBorrador(), []);
-
   const {
     register,
     handleSubmit,
@@ -66,31 +63,8 @@ function App() {
     formState: { errors },
   } = useForm<FormularioSchemaType>({
     resolver: zodResolver(formularioSchema),
-    defaultValues: savedData
-      ? {
-          fecha: DEFAULT_VALUES.fecha,
-          responsableTurno: savedData.responsableTurno ?? DEFAULT_VALUES.responsableTurno,
-          responsableTurno2: savedData.responsableTurno2 ?? DEFAULT_VALUES.responsableTurno2,
-          centroTrabajo: savedData.centroTrabajo ?? DEFAULT_VALUES.centroTrabajo,
-          auxiliares: savedData.auxiliares?.length ? savedData.auxiliares : DEFAULT_VALUES.auxiliares,
-          incidencias: savedData.incidencias ?? DEFAULT_VALUES.incidencias,
-          cochesDiarios: savedData.cochesDiarios ?? DEFAULT_VALUES.cochesDiarios,
-          cochesSemana: savedData.cochesSemana ?? DEFAULT_VALUES.cochesSemana,
-        }
-      : DEFAULT_VALUES,
+    defaultValues: DEFAULT_VALUES,
   });
-
-  // Restore counts from draft
-  useEffect(() => {
-    if (savedData) {
-      if (savedData.auxiliares?.length) {
-        setAuxiliarCount(savedData.auxiliares.length);
-      }
-      if (savedData.incidencias?.length) {
-        setIncidentCount(savedData.incidencias.length);
-      }
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Watch form for auto-save
   const watchedValues = watch();
