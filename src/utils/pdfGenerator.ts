@@ -181,13 +181,22 @@ export async function generarPDF(data: FormularioData): Promise<jsPDF> {
   const cochesDiariosStr = data.cochesDiarios?.trim();
   const cochesSemanaStr = data.cochesSemana?.trim();
   
-  if (cochesDiariosStr || cochesSemanaStr) {
+  let isSunday = false;
+  if (data.fecha) {
+    const parts = data.fecha.split('-');
+    if (parts.length === 3) {
+      const dateObj = new Date(parseInt(parts[0]!), parseInt(parts[1]!) - 1, parseInt(parts[2]!));
+      isSunday = dateObj.getDay() === 0;
+    }
+  }
+  
+  if (cochesDiariosStr || (cochesSemanaStr && isSunday)) {
     doc.setFont('helvetica', 'bold');
     doc.text('Coches diarios:', margin, y);
     doc.setFont('helvetica', 'normal');
     doc.text(cochesDiariosStr || '-', margin + 25, y);
 
-    if (cochesSemanaStr) {
+    if (cochesSemanaStr && isSunday) {
       doc.setFont('helvetica', 'bold');
       doc.text('Coches semana:', halfPage, y);
       doc.setFont('helvetica', 'normal');
