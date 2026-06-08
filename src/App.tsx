@@ -14,10 +14,10 @@ import { useDarkMode } from './hooks/useDarkMode';
 import { cargarBorrador, limpiarBorrador } from './utils/storage';
 import type { FormularioData } from './types';
 
-const getLocalDateString = () => {
+const getLocalDateString = (): string => {
   const date = new Date();
   const offset = date.getTimezoneOffset() * 60000;
-  return new Date(date.getTime() - offset).toISOString().split('T')[0];
+  return new Date(date.getTime() - offset).toISOString().split('T')[0] ?? '';
 };
 
 const DEFAULT_VALUES: FormularioSchemaType = {
