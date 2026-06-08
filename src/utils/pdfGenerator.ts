@@ -177,7 +177,7 @@ export async function generarPDF(data: FormularioData): Promise<jsPDF> {
   
   y += 5;
   doc.setFontSize(7);
-  doc.setTextColor(...colors.gray);
+  doc.setTextColor(...colors.textLight);
   doc.text(`Documento generado: ${new Date().toLocaleString('es-ES')}`, margin, y);
   
   y += 12;
