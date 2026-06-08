@@ -68,7 +68,7 @@ function App() {
     resolver: zodResolver(formularioSchema),
     defaultValues: savedData
       ? {
-          fecha: savedData.fecha ?? DEFAULT_VALUES.fecha,
+          fecha: DEFAULT_VALUES.fecha,
           responsableTurno: savedData.responsableTurno ?? DEFAULT_VALUES.responsableTurno,
           responsableTurno2: savedData.responsableTurno2 ?? DEFAULT_VALUES.responsableTurno2,
           centroTrabajo: savedData.centroTrabajo ?? DEFAULT_VALUES.centroTrabajo,
