@@ -7,6 +7,7 @@ import { StaffSection } from './components/StaffSection';
 import { IncidentsSection } from './components/IncidentsSection';
 import { PdfPreviewModal } from './components/PdfPreviewModal';
 import { ImportExportButtons } from './components/ImportExportButtons';
+import { Login } from './components/Login';
 import { formularioSchema, type FormularioSchemaType } from './schemas/incidentForm';
 import { useAutoSave } from './hooks/useAutoSave';
 import { useDarkMode } from './hooks/useDarkMode';
@@ -28,6 +29,16 @@ function App() {
   const [auxiliarCount, setAuxiliarCount] = useState(1);
   const [incidentCount, setIncidentCount] = useState(0);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  // --- LOGIN ---
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem('donca_auth') === 'true';
+  });
+
+  const handleLoginSuccess = () => {
+    sessionStorage.setItem('donca_auth', 'true');
+    setIsAuthenticated(true);
+  };
 
   // Load saved draft
   const savedData = useMemo(() => cargarBorrador(), []);
@@ -207,6 +218,10 @@ function App() {
       showNotification('success', 'Nuevo parte creado');
     }
   }, [reset, showNotification]);
+
+  if (!isAuthenticated) {
+    return <Login onLoginSuccess={handleLoginSuccess} />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
