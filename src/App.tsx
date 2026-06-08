@@ -284,7 +284,7 @@ function App() {
           />
 
           {/* Section 3: Coches */}
-          <CochesSection register={register} watch={watch} />
+          <CochesSection register={register} watch={watch} setValue={setValue} />
 
           {/* Section 4: Incidents */}
           <IncidentsSection

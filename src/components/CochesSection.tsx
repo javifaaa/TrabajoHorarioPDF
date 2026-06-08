@@ -1,64 +1,133 @@
-import React from 'react';
-import type { UseFormRegister, UseFormWatch } from 'react-hook-form';
+import React, { useState } from 'react';
+import type { UseFormRegister, UseFormWatch, UseFormSetValue } from 'react-hook-form';
 import type { FormularioSchemaType } from '../schemas/incidentForm';
+import { useCoches } from '../hooks/useCoches';
+import { CarFront, Save, Calculator, CheckCircle2 } from 'lucide-react';
 
 interface CochesSectionProps {
   register: UseFormRegister<FormularioSchemaType>;
   watch: UseFormWatch<FormularioSchemaType>;
+  setValue: UseFormSetValue<FormularioSchemaType>;
 }
 
-export const CochesSection: React.FC<CochesSectionProps> = ({ register, watch }) => {
+export const CochesSection: React.FC<CochesSectionProps> = ({ register, watch, setValue }) => {
   const fecha = watch('fecha');
-  // En JavaScript, el Domingo es el día 0
+  const cochesDiarios = watch('cochesDiarios');
   const isSunday = fecha ? new Date(fecha).getDay() === 0 : false;
+  
+  const { guardarCochesDiarios, calcularCochesSemana, isSaving, isCalculating } = useCoches();
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleSaveDaily = async () => {
+    if (!fecha || !cochesDiarios) return;
+    const num = parseInt(cochesDiarios, 10);
+    if (isNaN(num)) return;
+    
+    const success = await guardarCochesDiarios(fecha, num);
+    setSaveStatus(success ? 'success' : 'error');
+    setTimeout(() => setSaveStatus('idle'), 3000);
+  };
+
+  const handleCalculateWeekly = async () => {
+    if (!fecha) return;
+    const total = await calcularCochesSemana(fecha);
+    if (total !== null) {
+      setValue('cochesSemana', total.toString());
+    }
+  };
 
   return (
-    <section className="card" id="seccion-coches">
-      <div className="card-header flex gap-4">
-        <div className="card-icon bg-indigo-100 dark:bg-indigo-900/50">
-          <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-300" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-          </svg>
-        </div>
-        <div>
-          <h2 className="card-title">Registro de Coches</h2>
-          <p className="card-subtitle">Afluencia de vehículos</p>
-        </div>
+    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 text-white shadow-xl" id="seccion-coches">
+      {/* Decorative background element */}
+      <div className="absolute -right-20 -top-20 opacity-10 pointer-events-none">
+        <CarFront className="w-64 h-64" />
       </div>
 
-      <div className="card-body p-4 sm:p-6 grid gap-6 sm:grid-cols-2">
-        {/* Coches Diarios */}
-        <div className="space-y-1.5 sm:space-y-2">
-          <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
-            Total coches diarios
-          </label>
-          <input
-            type="number"
-            {...register('cochesDiarios')}
-            className="input-field"
-            placeholder="Ej: 150"
-          />
+      <div className="p-6 relative z-10">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2.5 bg-white/10 rounded-xl backdrop-blur-sm">
+            <CarFront className="w-6 h-6 text-blue-300" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold tracking-tight">Registro de Vehículos</h2>
+            <p className="text-sm text-slate-400">Control de afluencia del aparcamiento</p>
+          </div>
         </div>
 
-        {/* Coches Semana */}
-        <div className={`space-y-1.5 sm:space-y-2 transition-opacity duration-300 ${!isSunday ? 'opacity-60' : ''}`}>
-          <div className="flex justify-between items-end">
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
-              Total coches semana
+        <div className="grid gap-6 sm:grid-cols-2">
+          {/* Coches Diarios */}
+          <div className="bg-white/5 backdrop-blur-md rounded-xl p-5 border border-white/10">
+            <label className="block text-sm font-medium text-slate-300 mb-3">
+              Coches de hoy
             </label>
-            {!isSunday && (
-              <span className="text-[10px] sm:text-xs font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-2 py-0.5 rounded-full">
-                Solo domingos
-              </span>
-            )}
+            <div className="flex gap-3">
+              <input
+                type="number"
+                {...register('cochesDiarios')}
+                className="w-full bg-slate-900/50 border border-white/20 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                placeholder="Ej: 150"
+              />
+              <button
+                type="button"
+                onClick={handleSaveDaily}
+                disabled={isSaving || !cochesDiarios}
+                className={`px-4 py-2.5 rounded-lg flex items-center justify-center transition-all ${
+                  saveStatus === 'success' ? 'bg-green-500 hover:bg-green-600' :
+                  saveStatus === 'error' ? 'bg-red-500 hover:bg-red-600' :
+                  'bg-blue-600 hover:bg-blue-700'
+                } disabled:opacity-50 disabled:cursor-not-allowed`}
+                title="Guardar en base de datos"
+              >
+                {isSaving ? (
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : saveStatus === 'success' ? (
+                  <CheckCircle2 className="w-5 h-5 text-white" />
+                ) : (
+                  <Save className="w-5 h-5 text-white" />
+                )}
+              </button>
+            </div>
+            {saveStatus === 'success' && <p className="text-green-400 text-xs mt-2 font-medium">¡Guardado correctamente!</p>}
           </div>
-          <input
-            type="number"
-            {...register('cochesSemana')}
-            className={`input-field ${!isSunday ? 'bg-gray-100 dark:bg-gray-800 cursor-not-allowed text-gray-400' : ''}`}
-            placeholder={isSunday ? "Ej: 1050" : "Bloqueado"}
-            disabled={!isSunday}
-          />
+
+          {/* Coches Semana (SOLO DOMINGOS) */}
+          {isSunday && (
+            <div className="bg-white/5 backdrop-blur-md rounded-xl p-5 border border-amber-500/30 relative overflow-hidden animate-slideUp">
+              <div className="absolute top-0 right-0 bg-amber-500/20 text-amber-300 text-[10px] font-bold px-2 py-1 rounded-bl-lg tracking-wider">
+                DOMINGOS
+              </div>
+              <label className="block text-sm font-medium text-slate-300 mb-3">
+                Total acumulado semana
+              </label>
+              <div className="flex gap-3">
+                <input
+                  type="number"
+                  {...register('cochesSemana')}
+                  className="w-full bg-slate-900/50 border border-amber-500/30 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all outline-none font-bold"
+                  placeholder="Pulsa calcular ->"
+                />
+                <button
+                  type="button"
+                  onClick={handleCalculateWeekly}
+                  disabled={isCalculating}
+                  className="px-4 py-2.5 rounded-lg bg-amber-600 hover:bg-amber-700 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Calcular total de lunes a domingo"
+                >
+                  {isCalculating ? (
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  ) : (
+                    <Calculator className="w-5 h-5 text-white" />
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
