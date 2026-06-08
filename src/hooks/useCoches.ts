@@ -25,7 +25,8 @@ export function useCoches() {
   const calcularCochesSemana = async (fechaDomingo: string) => {
     setIsCalculating(true);
     try {
-      const date = new Date(fechaDomingo);
+      const [y, m, d] = fechaDomingo.split('-');
+      const date = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
       const day = date.getDay();
       
       // Asegurarnos de que calculamos desde el lunes de esta semana
@@ -33,7 +34,14 @@ export function useCoches() {
       const monday = new Date(date);
       monday.setDate(date.getDate() + diffToMonday);
       
-      const mondayStr = monday.toISOString().split('T')[0];
+      const formatLocalDate = (d: Date) => {
+        const yy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yy}-${mm}-${dd}`;
+      };
+      
+      const mondayStr = formatLocalDate(monday);
 
       const { data, error } = await supabase
         .from('registro_coches')

@@ -13,7 +13,14 @@ interface CochesSectionProps {
 export const CochesSection: React.FC<CochesSectionProps> = ({ register, watch, setValue }) => {
   const fecha = watch('fecha');
   const cochesDiarios = watch('cochesDiarios');
-  const isSunday = fecha ? new Date(fecha).getDay() === 0 : false;
+  const parseLocalDate = (dateStr: string) => {
+    if (!dateStr) return null;
+    const [y, m, d] = dateStr.split('-');
+    return new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+  };
+  
+  const dateObj = parseLocalDate(fecha);
+  const isSunday = dateObj ? dateObj.getDay() === 0 : false;
   
   const { guardarCochesDiarios, calcularCochesSemana, isSaving, isCalculating } = useCoches();
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
