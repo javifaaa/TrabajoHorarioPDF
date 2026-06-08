@@ -135,24 +135,52 @@ export async function generarPDF(data: FormularioData): Promise<jsPDF> {
   doc.setTextColor(...colors.white);
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  doc.text('PARTE DE INCIDENCIAS', margin, 15);
+  doc.text('PARTE DE INCIDENCIAS', margin, 26);
 
-  // Subtitle info
-  const middleX = (pageWidth / 2) - 10;
+  y = 55;
+
+  // --- DATOS GENERALES ---
+  doc.setTextColor(...colors.primary);
+  doc.setFontSize(12);
+  doc.setFont('helvetica', 'bold');
+  doc.text('DATOS GENERALES', margin, y);
+  
+  y += 7;
+  doc.setTextColor(...colors.text);
   doc.setFontSize(9);
+  
+  const halfPage = pageWidth / 2;
+  
+  // Fila 1
+  doc.setFont('helvetica', 'bold');
+  doc.text('Fecha:', margin, y);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Fecha: ${formatDate(data.fecha)}`, margin, 23);
-  doc.text(`Centro: ${data.centroTrabajo}`, middleX, 23);
-  doc.text(`Responsable 1: ${data.responsableTurno || '-'}`, margin, 29);
-  const resp2Text = data.responsableTurno2 ? `Responsable 2: ${data.responsableTurno2}` : '';
-  if (resp2Text) {
-    doc.text(resp2Text, middleX, 29);
-  }
-  doc.text(`Fecha: ${formatDate(data.fecha)}`, margin, 35);
-  doc.setFontSize(8);
-  doc.text(`Generado: ${new Date().toLocaleString('es-ES')}`, middleX, 35);
+  doc.text(formatDate(data.fecha), margin + 13, y);
 
-  y = 52;
+  doc.setFont('helvetica', 'bold');
+  doc.text('Centro:', halfPage, y);
+  doc.setFont('helvetica', 'normal');
+  doc.text(data.centroTrabajo, halfPage + 14, y);
+  
+  y += 6;
+
+  // Fila 2
+  doc.setFont('helvetica', 'bold');
+  doc.text('Resp. (10h-19h):', margin, y);
+  doc.setFont('helvetica', 'normal');
+  doc.text(data.responsableTurno || '-', margin + 28, y);
+
+  doc.setFont('helvetica', 'bold');
+  doc.text('Resp. (19h-04h):', halfPage, y);
+  doc.setFont('helvetica', 'normal');
+  doc.text(data.responsableTurno2 || '-', halfPage + 28, y);
+  
+  y += 5;
+  doc.setFontSize(7);
+  doc.setTextColor(...colors.gray);
+  doc.text(`Documento generado: ${new Date().toLocaleString('es-ES')}`, margin, y);
+  
+  y += 12;
 
   // --- SECTION: PERSONAL DE SERVICIO ---
   const allAuxiliares = data.auxiliares.filter(a => a.nombre?.trim() || a.turno?.trim());
