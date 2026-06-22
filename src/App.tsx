@@ -12,6 +12,7 @@ import { Login } from './components/Login';
 import { formularioSchema, type FormularioSchemaType } from './schemas/incidentForm';
 import { useAutoSave } from './hooks/useAutoSave';
 import { useDarkMode } from './hooks/useDarkMode';
+import { useCoches } from './hooks/useCoches';
 import { limpiarBorrador } from './utils/storage';
 import type { FormularioData } from './types';
 
@@ -125,13 +126,20 @@ function App() {
     [watch, watchedValues, reset]
   );
 
+  const { guardarCochesDiarios } = useCoches();
+
   // --- PDF ---
   const handleGeneratePdf = useCallback(
-    (data: FormularioSchemaType) => {
-      void data;
+    async (data: FormularioSchemaType) => {
+      if (data.fecha && data.cochesDiarios) {
+        const num = parseInt(data.cochesDiarios, 10);
+        if (!isNaN(num)) {
+          await guardarCochesDiarios(data.fecha, num);
+        }
+      }
       setShowPdfPreview(true);
     },
-    []
+    [guardarCochesDiarios]
   );
 
   const getFullFormData = useCallback((): FormularioData => {

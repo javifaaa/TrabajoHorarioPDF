@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { UseFormRegister, UseFormWatch, UseFormSetValue } from 'react-hook-form';
 import type { FormularioSchemaType } from '../schemas/incidentForm';
 import { useCoches } from '../hooks/useCoches';
-import { CarFront, Save, Calculator, CheckCircle2 } from 'lucide-react';
+import { CarFront, Calculator } from 'lucide-react';
 
 interface CochesSectionProps {
   register: UseFormRegister<FormularioSchemaType>;
@@ -23,18 +23,7 @@ export const CochesSection: React.FC<CochesSectionProps> = ({ register, watch, s
   const dateObj = parseLocalDate(fecha);
   const isSunday = dateObj ? dateObj.getDay() === 0 : false;
   
-  const { guardarCochesDiarios, calcularCochesSemana, isSaving, isCalculating } = useCoches();
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
-
-  const handleSaveDaily = async () => {
-    if (!fecha || !cochesDiarios) return;
-    const num = parseInt(cochesDiarios, 10);
-    if (isNaN(num)) return;
-    
-    const success = await guardarCochesDiarios(fecha, num);
-    setSaveStatus(success ? 'success' : 'error');
-    setTimeout(() => setSaveStatus('idle'), 3000);
-  };
+  const { calcularCochesSemana, isCalculating } = useCoches();
 
   const handleCalculateWeekly = async () => {
     if (!fecha) return;
@@ -73,32 +62,9 @@ export const CochesSection: React.FC<CochesSectionProps> = ({ register, watch, s
                 type="number"
                 {...register('cochesDiarios')}
                 className="w-full bg-slate-900/50 border border-white/20 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
-                placeholder="Ej: 150"
+                placeholder="Ej: 150 (Se guardará al Generar PDF)"
               />
-              <button
-                type="button"
-                onClick={handleSaveDaily}
-                disabled={isSaving || !cochesDiarios}
-                className={`px-4 py-2.5 rounded-lg flex items-center justify-center transition-all ${
-                  saveStatus === 'success' ? 'bg-green-500 hover:bg-green-600' :
-                  saveStatus === 'error' ? 'bg-red-500 hover:bg-red-600' :
-                  'bg-blue-600 hover:bg-blue-700'
-                } disabled:opacity-50 disabled:cursor-not-allowed`}
-                title="Guardar en base de datos"
-              >
-                {isSaving ? (
-                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                ) : saveStatus === 'success' ? (
-                  <CheckCircle2 className="w-5 h-5 text-white" />
-                ) : (
-                  <Save className="w-5 h-5 text-white" />
-                )}
-              </button>
             </div>
-            {saveStatus === 'success' && <p className="text-green-400 text-xs mt-2 font-medium">¡Guardado correctamente!</p>}
           </div>
 
           {/* Coches Semana (SOLO DOMINGOS) */}
