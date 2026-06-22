@@ -12,7 +12,6 @@ interface CochesSectionProps {
 
 export const CochesSection: React.FC<CochesSectionProps> = ({ register, watch, setValue }) => {
   const fecha = watch('fecha');
-  const cochesDiarios = watch('cochesDiarios');
   const parseLocalDate = (dateStr: string) => {
     if (!dateStr) return null;
     const parts = dateStr.split('-');
