@@ -2,7 +2,8 @@ import React from 'react';
 import type { UseFormRegister, UseFormWatch, UseFormSetValue } from 'react-hook-form';
 import type { FormularioSchemaType } from '../schemas/incidentForm';
 import { useCoches } from '../hooks/useCoches';
-import { CarFront, Calculator } from 'lucide-react';
+import { CarFront, Calculator, History } from 'lucide-react';
+import { HistorialCochesModal } from './HistorialCochesModal';
 
 interface CochesSectionProps {
   register: UseFormRegister<FormularioSchemaType>;
@@ -22,6 +23,7 @@ export const CochesSection: React.FC<CochesSectionProps> = ({ register, watch, s
   const dateObj = parseLocalDate(fecha);
   const isSunday = dateObj ? dateObj.getDay() === 0 : false;
   
+  const [showHistorial, setShowHistorial] = React.useState(false);
   const { calcularCochesSemana, isCalculating } = useCoches();
 
   const handleCalculateWeekly = async () => {
@@ -102,7 +104,24 @@ export const CochesSection: React.FC<CochesSectionProps> = ({ register, watch, s
             </div>
           )}
         </div>
+
+        {/* History Button */}
+        <div className="mt-6 flex justify-end">
+          <button
+            type="button"
+            onClick={() => setShowHistorial(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors border border-slate-700 hover:border-slate-600"
+          >
+            <History className="w-4 h-4" />
+            <span className="text-sm font-medium">Ver historial semanal</span>
+          </button>
+        </div>
       </div>
+
+      <HistorialCochesModal
+        isOpen={showHistorial}
+        onClose={() => setShowHistorial(false)}
+      />
     </section>
   );
 };
