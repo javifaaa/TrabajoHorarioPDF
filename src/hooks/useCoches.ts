@@ -75,7 +75,7 @@ export function useCoches() {
       if (!data) return [];
 
       // Agrupar por semana
-      const weeks = new Map<string, { total: number, startDate: Date, endDate: Date }>();
+      const weeks = new Map<string, { total: number, startDate: Date, endDate: Date, dias: { fecha: string, cantidad: number }[] }>();
       
       data.forEach(row => {
         if (!row.fecha || !row.cantidad) return;
@@ -96,8 +96,12 @@ export function useCoches() {
         
         const weekKey = `${monday.toISOString().split('T')[0]}_${sunday.toISOString().split('T')[0]}`;
         
-        const current = weeks.get(weekKey) || { total: 0, startDate: monday, endDate: sunday };
-        weeks.set(weekKey, { ...current, total: current.total + row.cantidad });
+        const current = weeks.get(weekKey) || { total: 0, startDate: monday, endDate: sunday, dias: [] };
+        
+        // Add day to current week
+        current.dias.push({ fecha: row.fecha, cantidad: row.cantidad });
+        
+        weeks.set(weekKey, { ...current, total: current.total + row.cantidad, dias: current.dias });
       });
 
       const formatDate = (d: Date) => {
@@ -107,11 +111,17 @@ export function useCoches() {
         return `${dd}/${mm}/${yy}`;
       };
 
-      return Array.from(weeks.values()).map(w => ({
-        etiqueta: `Semana del ${formatDate(w.startDate)} al ${formatDate(w.endDate)}`,
-        total: w.total,
-        startDate: w.startDate
-      })).sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
+      return Array.from(weeks.values()).map(w => {
+        // Sort dias by date
+        w.dias.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+        
+        return {
+          etiqueta: `Semana del ${formatDate(w.startDate)} al ${formatDate(w.endDate)}`,
+          total: w.total,
+          startDate: w.startDate,
+          dias: w.dias
+        };
+      }).sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
 
     } catch (err) {
       console.error('Error obteniendo historial:', err);

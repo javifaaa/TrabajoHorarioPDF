@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useCoches } from '../hooks/useCoches';
-import { CarFront, Calendar, X } from 'lucide-react';
+import { CarFront, Calendar, X, ChevronDown } from 'lucide-react';
 
 interface HistorialCochesModalProps {
   isOpen: boolean;
@@ -9,8 +9,13 @@ interface HistorialCochesModalProps {
 
 export const HistorialCochesModal: React.FC<HistorialCochesModalProps> = ({ isOpen, onClose }) => {
   const { obtenerHistorialSemanas } = useCoches();
-  const [historial, setHistorial] = useState<{ etiqueta: string; total: number }[]>([]);
+  const [historial, setHistorial] = useState<{ etiqueta: string; total: number; dias: { fecha: string; cantidad: number }[] }[]>([]);
   const [loading, setLoading] = useState(false);
+  const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
+
+  const toggleWeek = (index: number) => {
+    setExpandedWeek(expandedWeek === index ? null : index);
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -64,16 +69,42 @@ export const HistorialCochesModal: React.FC<HistorialCochesModalProps> = ({ isOp
           ) : (
             <div className="space-y-3">
               {historial.map((item, i) => (
-                <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-800 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-500/10 rounded-lg">
-                      <Calendar className="w-4 h-4 text-blue-400" />
+                <div 
+                  key={i} 
+                  className="flex flex-col p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-800 transition-colors cursor-pointer"
+                  onClick={() => toggleWeek(i)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-500/10 rounded-lg">
+                        <Calendar className="w-4 h-4 text-blue-400" />
+                      </div>
+                      <span className="text-sm font-medium text-slate-200">{item.etiqueta}</span>
                     </div>
-                    <span className="text-sm font-medium text-slate-200">{item.etiqueta}</span>
+                    <div className="flex items-center gap-4">
+                      <div className="font-bold text-amber-400 text-lg">
+                        {item.total} <span className="text-xs font-normal text-slate-400">coches</span>
+                      </div>
+                      <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${expandedWeek === i ? 'rotate-180' : ''}`} />
+                    </div>
                   </div>
-                  <div className="font-bold text-amber-400 text-lg">
-                    {item.total} <span className="text-xs font-normal text-slate-400">coches</span>
-                  </div>
+                  
+                  {expandedWeek === i && (
+                    <div className="mt-4 pt-4 border-t border-slate-700/50 space-y-2 animate-fadeIn">
+                      {item.dias.map((dia, j) => {
+                        const dateObj = new Date(dia.fecha);
+                        const dayName = new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(dateObj);
+                        const formattedDate = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit' }).format(dateObj);
+                        
+                        return (
+                          <div key={j} className="flex items-center justify-between text-sm px-2 py-1 rounded hover:bg-slate-700/30">
+                            <span className="text-slate-400 capitalize">{dayName}, {formattedDate}</span>
+                            <span className="text-slate-300 font-medium">{dia.cantidad} coches</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
