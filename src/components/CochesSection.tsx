@@ -35,7 +35,6 @@ export const CochesSection: React.FC<CochesSectionProps> = ({ register, watch, s
   };
 
   return (
-  return (
     <section className="card relative overflow-hidden" id="seccion-coches">
       {/* Decorative background element */}
       <div className="absolute -right-20 -top-20 opacity-5 dark:opacity-10 pointer-events-none">
